@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# IRCTC Rebuild - Next-Gen Rail Travel Platform
 
-## Getting Started
+A modern, full-stack rebuild of the Indian Railways booking platform, featuring a futuristic "Cyberpunk Rail" aesthetic, real-time search, and comprehensive station/train data.
 
-First, run the development server:
+![Project Preview](public/preview.png) *Add a screenshot here if available*
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+*   **Futuristic UI/UX**: Glassmorphism, animated backgrounds, and smooth transitions using Framer Motion.
+*   **Comprehensive Search**:
+    *   **All India Stations**: Database of ~9,000 stations covering all 28 states.
+    *   **Smart Autocomplete**: Search by Station Name or Code (e.g., "NDLS", "KSR Bengaluru").
+    *   **Train Search**: Find trains by Name or Number.
+*   **Booking Flow**:
+    *   Real-time availability check (simulated).
+    *   Passenger details form.
+    *   PNR Generation and Booking Confirmation.
+*   **User Dashboard**: View booking history and status.
+*   **Admin Dashboard**: Manage trains, view bookings, and monitor revenue.
+*   **Tech Stack**:
+    *   **Framework**: Next.js 14 (App Router)
+    *   **Language**: TypeScript
+    *   **Styling**: CSS Modules (Custom Design System, No Tailwind)
+    *   **Database**: SQLite (with Prisma ORM)
+    *   **Auth**: NextAuth.js
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
 
-## Learn More
+*   Node.js 18+
+*   npm
 
-To learn more about Next.js, take a look at the following resources:
+### Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/yourusername/irctc-rebuild.git
+    cd irctc-rebuild
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
 
-## Deploy on Vercel
+3.  **Set up Environment Variables**
+    Create a `.env` file in the root directory:
+    ```env
+    DATABASE_URL="file:./dev.db"
+    NEXTAUTH_SECRET="your-secret-key-here"
+    NEXTAUTH_URL="http://localhost:3000"
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4.  **Initialize Database**
+    ```bash
+    npx prisma migrate dev --name init
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5.  **Seed Database** (Optional but recommended for initial data)
+    ```bash
+    npx prisma db seed
+    ```
+    *Note: The application also uses JSON datasets in `src/data/` for search performance.*
+
+6.  **Run Development Server**
+    ```bash
+    npm run dev
+    ```
+
+    Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 📂 Project Structure
+
+*   `src/app`: Next.js App Router pages and API routes.
+*   `src/components`: Reusable UI components (Hero, Navbar, Autocomplete, etc.).
+*   `src/lib`: Utility functions and Prisma client instance.
+*   `src/data`: JSON datasets for Stations and Trains.
+*   `prisma`: Database schema and seed scripts.
+*   `scripts`: Node.js scripts for data transformation.
+
+## 🚄 Data Sources
+
+*   **Stations**: Comprehensive list of Indian Railway stations sourced from open datasets.
+*   **Trains**: Extensive list of trains running across India.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License.

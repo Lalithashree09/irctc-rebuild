@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String?
+  email     String    @unique
+  password  String
+  role      String    @default("USER") // USER, ADMIN
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bookings  Booking[]
+}
+
+model Station {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  city      String?
+  state     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  departures Route[] @relation("DepartureStation")
+  arrivals   Route[] @relation("ArrivalStation")
+}
+
+model Train {
+  id        String   @id @default(cuid())
+  number    String   @unique
+  name      String
+  type      String   @default("EXPRESS") // EXPRESS, SUPERFAST, RAJDHANI, etc.
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  routes    Route[]
+  schedules Schedule[]
+}
+
+model Route {
+  id                String   @id @default(cuid())
+  trainId           String
+  train             Train    @relation(fields: [trainId], references: [id])
+  stationId         String
+  station           Station  @relation("ArrivalStation", fields: [stationId], references: [id])
+  departureStationId String?
+  departureStation  Station? @relation("DepartureStation", fields: [departureStationId], references: [id])
+  
+  sequenceOrder     Int
+  distanceFromStart Float    @default(0)
+  platform          String?  @default("1")
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// A schedule represents a specific run of a train on a specific date
+model Schedule {
+  id        String    @id @default(cuid())
+  trainId   String
+  train     Train     @relation(fields: [trainId], references: [id])
+  date      DateTime
+  
+  // Available seats could be tracked here or in a separate SeatAvailability model
+  // For simplicity, we'll track basic availability here
+  sleeperAvailable    Int @default(72)
+  ac3TierAvailable    Int @default(64)
+  ac2TierAvailable    Int @default(48)
+  ac1TierAvailable    Int @default(24)
+  
+  bookings  Booking[]
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([trainId, date])
+}
+
+model Booking {
+  id            String      @id @default(cuid())
+  pnr           String      @unique
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  scheduleId    String
+  schedule      Schedule    @relation(fields: [scheduleId], references: [id])
+  
+  status        String      @default("BOOKED") // BOOKED, CANCELLED, WAITING
+  totalAmount   Float
+  
+  passengers    Passenger[]
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Passenger {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  
+  name      String
+  age       Int
+  gender    String
+  seatNumber String?
+  coach     String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
